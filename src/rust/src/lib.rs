@@ -3,7 +3,7 @@ use extendr_api::prelude::*;
 /// Do value iteration for GridWorld
 /// @export
 #[extendr]
-fn value_iteration (reward: Vec<f64>, end_cell: i32) {
+fn value_iteration (reward: Vec<f64>, end_cell: i32) -> Vec<f64>{
     let end_cell = end_cell as usize;
     let mut future_value: Vec<Vec<f64>> = vec![vec![0.0; 4]; 25];
     let mut value: Vec<f64> = vec![0.0; 25];
@@ -27,7 +27,7 @@ fn value_iteration (reward: Vec<f64>, end_cell: i32) {
             value_next[i] = value_action[i].iter().cloned().fold(f64::NEG_INFINITY, f64::max);
         }
     }
-    println!("{:?}", value_next);
+    value_next
 }
 
 fn check_convergence (value: Vec<f64>, value_next: Vec<f64>) -> bool {
