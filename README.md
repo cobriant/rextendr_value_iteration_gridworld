@@ -1,6 +1,6 @@
 # rextendr_value_iteration_gridworld
 
-This does value iteration to find the value of being in each cell of a 5x5 gridworld given a reward function and an end state (cell in which movement on the grid terminates). Movement is windy, so you only get to the cell you want w.p. 0.7.
+This does value iteration to find the value of being in each cell of a 5x5 gridworld given a reward function and an end state (cell in which movement on the grid terminates). Movement is windy, so you only get to the cell you want w.p. 0.7. The discount factor beta = 0.95.
 
 Use:
 
