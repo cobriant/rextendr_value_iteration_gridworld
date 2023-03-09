@@ -4,7 +4,7 @@
 \alias{value_iteration}
 \title{Do value iteration for GridWorld}
 \usage{
-value_iteration(reward, end_cell)
+value_iteration(reward, obstacles, end_cell)
 }
 \description{
 Do value iteration for GridWorld
