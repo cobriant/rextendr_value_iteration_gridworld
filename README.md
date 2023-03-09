@@ -14,4 +14,4 @@ reward[5] <- 1.0
 
 This finds the value of being in each cell on the grid where the upper right hand corner (cell 4 where the 0th cell is the upper left hand corner) is the end state and the only cell with nonzero reward:
 
-rust::value_iteration(reward, 4L)
+rust::value_iteration(reward, obstacles = c(0L, 2L), end_cell = 4L)
