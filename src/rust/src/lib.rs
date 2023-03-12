@@ -30,6 +30,8 @@ fn value_iteration (reward: Vec<f64>, obstacles: Vec<i32>, end_cell: i32) -> Vec
     value_next
 }
 
+/// Do value iteration for GridWorld using softmax
+/// @export
 #[extendr]
 fn value_iteration_soft (reward: Vec<f64>, obstacles: Vec<i32>, end_cell: i32) -> Vec<f64>{
     let end_cell = end_cell as usize;
@@ -156,8 +158,6 @@ fn update_future_value<'a, 'b> (
     }
     future_value
 }
-
-
 
 
 // Macro to generate exports.
