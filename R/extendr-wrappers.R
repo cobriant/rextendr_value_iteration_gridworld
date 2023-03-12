@@ -12,3 +12,5 @@ NULL
 #' @export
 value_iteration <- function(reward, obstacles, end_cell) .Call(wrap__value_iteration, reward, obstacles, end_cell)
 
+value_iteration_soft <- function(reward, obstacles, end_cell) .Call(wrap__value_iteration_soft, reward, obstacles, end_cell)
+

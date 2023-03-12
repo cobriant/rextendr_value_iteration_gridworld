@@ -30,6 +30,45 @@ fn value_iteration (reward: Vec<f64>, obstacles: Vec<i32>, end_cell: i32) -> Vec
     value_next
 }
 
+#[extendr]
+fn value_iteration_soft (reward: Vec<f64>, obstacles: Vec<i32>, end_cell: i32) -> Vec<f64>{
+    let end_cell = end_cell as usize;
+    let mut future_value: Vec<Vec<f64>> = vec![vec![0.0; 4]; 25];
+    let mut value: Vec<f64> = vec![0.0; 25];
+    let mut value_next: Vec<f64> = vec![1.0; 25];
+    let mut value_action = vec![vec![0.0; 4]; 25];
+
+    while check_convergence(value, value_next.clone()) {
+        value = value_next.clone();
+
+        let future_value_next = update_future_value(&mut future_value, &value, end_cell, &obstacles);
+
+        for i in 0..25 {
+            for j in 0..4 {
+                // value_action[25x4] = reward[25x1] + 0.95 * future_value[25x4]
+                value_action[i][j] = reward[i] + 0.95 * future_value_next[i][j];
+            }
+        }
+
+        // value_next are SOFT row maxes of value_action using logsumexp:
+        for i in 0..25 {
+            let maximum_value = value_action[i].iter().cloned().fold(f64::NEG_INFINITY, f64::max);
+            for j in 0..4 {
+                value_action[i][j] = value_action[i][j] * 100.0;
+                value_action[i][j] = value_action[i][j] - maximum_value;
+                value_action[i][j] = value_action[i][j].exp();
+            }
+            value_next[i] = 0.0;
+            for j in 0..4 {
+                value_next[i] = value_next[i] + value_action[i][j];
+            }
+            value_next[i] = value_next[i].ln() + maximum_value;
+            value_next[i] = value_next[i] / 100.0;
+        }
+    }
+    value_next
+}
+
 fn check_convergence (value: Vec<f64>, value_next: Vec<f64>) -> bool {
     let diff = value
     .iter()
@@ -119,10 +158,13 @@ fn update_future_value<'a, 'b> (
 }
 
 
+
+
 // Macro to generate exports.
 // This ensures exported functions are registered with R.
 // See corresponding C code in `entrypoint.c`.
 extendr_module! {
     mod rust;
     fn value_iteration;
+    fn value_iteration_soft;
 }
