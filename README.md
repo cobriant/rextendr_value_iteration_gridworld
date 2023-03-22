@@ -14,4 +14,10 @@ reward[5] <- 1.0
 
 This finds the value of being in each cell on the grid where the upper right hand corner (cell 4 where the 0th cell is the upper left hand corner) is the end state and the only cell with nonzero reward:
 
-rust::value_iteration(reward, obstacles = c(0L, 2L), end_cell = 4L)
+v <- value_iteration(reward, obstacles = -1L, end_cell = 4L, wind = 0.7, beta = 0.95)
+
+The value function:
+v[1:25]
+
+value_action:
+matrix(v[26:125], nrow = 25, byrow = T)
