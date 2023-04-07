@@ -10,5 +10,5 @@ NULL
 
 #' Do value iteration for GridWorld
 #' @export
-value_iteration <- function(reward, obstacles, end_cell, wind, beta) .Call(wrap__value_iteration, reward, obstacles, end_cell, wind, beta)
+value_iteration <- function(reward, obstacles, wind, beta) .Call(wrap__value_iteration, reward, obstacles, wind, beta)
 

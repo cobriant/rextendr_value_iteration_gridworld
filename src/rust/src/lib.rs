@@ -3,8 +3,7 @@ use extendr_api::prelude::*;
 /// Do value iteration for GridWorld
 /// @export
 #[extendr]
-fn value_iteration (reward: Vec<f64>, obstacles: Vec<i32>, end_cell: i32, wind: f64, beta: f64) -> Vec<f64> {
-    let end_cell = end_cell as usize;
+fn value_iteration (reward: Vec<f64>, obstacles: Vec<i32>, wind: f64, beta: f64) -> Vec<f64> {
     let mut future_value: Vec<Vec<f64>> = vec![vec![0.0; 4]; 25];
     let mut value: Vec<f64> = vec![0.0; 25];
     let mut value_next: Vec<f64> = vec![1.0; 25];
@@ -13,7 +12,7 @@ fn value_iteration (reward: Vec<f64>, obstacles: Vec<i32>, end_cell: i32, wind: 
     while check_convergence(value, value_next.clone()) {
         value = value_next.clone();
 
-        let future_value_next = update_future_value(&mut future_value, &value, end_cell, &obstacles, wind);
+        let future_value_next = update_future_value(&mut future_value, &value, &obstacles, wind);
 
         for i in 0..25 {
             for j in 0..4 {
@@ -92,7 +91,6 @@ fn hits_obstacles (pos: usize, action: i32, obstacles: &Vec<i32>) -> bool{
 fn update_future_value<'a, 'b> (
     future_value: &'a mut Vec<Vec<f64>>,
     value: &'b Vec<f64>,
-    end_cell: usize,
     obstacles: &Vec<i32>,
     wind: f64,
 ) -> &'a mut Vec<Vec<f64>> {
@@ -118,13 +116,8 @@ fn update_future_value<'a, 'b> (
             future_value[i][j] = value_sum;
         }
     }
-    // End state is position 4: the value of leaving it is always 0.
-    for i in 0..4 {
-        future_value[end_cell][i] = 0.0;
-    }
     future_value
 }
-
 
 // Macro to generate exports.
 // This ensures exported functions are registered with R.
