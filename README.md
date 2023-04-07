@@ -1,6 +1,6 @@
 # rextendr_value_iteration_gridworld
 
-This does value iteration to find the value of being in each cell of a 5x5 gridworld given a reward function and an end state (cell in which movement on the grid terminates). Movement is windy, so you only get to the cell you want w.p. 0.7. The discount factor beta = 0.95.
+This does value iteration to find the value of being in each cell of a 5x5 gridworld given a reward function. Movement may be windy and time steps can be discounted by a discount factor beta. Movement can be deterred with a vector of obstacles. If you want no obstacles, set obstacles = -1L.
 
 Use:
 
@@ -12,9 +12,9 @@ reward <- rep(0.0, 25)
 
 reward[5] <- 1.0
 
-This finds the value of being in each cell on the grid where the upper right hand corner (cell 4 where the 0th cell is the upper left hand corner) is the end state and the only cell with nonzero reward:
+This finds the value of being in each cell on the grid where the upper right hand corner (cell 4 where the 0th cell is the upper left hand corner) is the only cell with nonzero reward:
 
-v <- value_iteration(reward, obstacles = -1L, end_cell = 4L, wind = 0.7, beta = 0.95)
+v <- value_iteration(reward, obstacles = -1L, wind = 0.7, beta = 0.95)
 
 The value function:
 v[1:25]
