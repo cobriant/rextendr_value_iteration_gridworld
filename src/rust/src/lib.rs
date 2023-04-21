@@ -1,4 +1,7 @@
 use extendr_api::prelude::*;
+use std::vec;
+use rand::seq::SliceRandom;
+use rand::Rng;
 
 /// Do value iteration for GridWorld
 /// @export
@@ -119,10 +122,67 @@ fn update_future_value<'a, 'b> (
     future_value
 }
 
+#[extendr]
+fn generate_trajs(policy: Vec<i32>, obstacles: Vec<i32>, wind: f64) -> Vec<i32> {
+    let num_trajectories = 50;
+    let trajectory_length = 10;
+    let mut rng = rand::thread_rng();
+    let mut trajectories: Vec<Vec<i32>> = vec![vec![0; trajectory_length]; num_trajectories];
+
+    for trajectory in trajectories.iter_mut() {
+        let mut pos = loop {
+            let random_pos = rng.gen_range(1..=25);
+            if !obstacles.contains(&(random_pos as i32)) {
+                break random_pos as i32;
+            }
+        };
+        for t in 0..trajectory_length {
+            let action = policy[(pos - 1) as usize];
+            let intended_move = match action {
+                1 => vec![1],
+                2 => vec![2],
+                3 => vec![3],
+                4 => vec![4],
+                12 => vec![1, 2],
+                13 => vec![1, 3],
+                14 => vec![1, 4],
+                23 => vec![2, 3],
+                24 => vec![2, 4],
+                34 => vec![3, 4],
+                6 => vec![1, 2, 3],
+                7 => vec![1, 2, 4],
+                8 => vec![1, 3, 4],
+                9 => vec![2, 3, 4],
+                10 => vec![1, 2, 3, 4],
+                _ => vec![],
+            };
+
+            let move_prob: f64 = rng.gen();
+            let actual_move = if move_prob < wind {
+                *intended_move.choose(&mut rng).unwrap()
+            } else {
+                let mut available_moves = vec![1, 2, 3, 4];
+                available_moves.retain(|m| !intended_move.contains(m));
+                *available_moves.choose(&mut rng).unwrap()
+            };
+
+            let next_pos = moving(pos as usize, actual_move, &obstacles);
+            if next_pos != 0 {
+                pos = next_pos as i32;
+            }
+            trajectory[t] = pos;
+        }
+    }
+
+    trajectories.into_iter().flatten().collect()
+}
+
+
 // Macro to generate exports.
 // This ensures exported functions are registered with R.
 // See corresponding C code in `entrypoint.c`.
 extendr_module! {
     mod rust;
     fn value_iteration;
+    fn generate_trajs;
 }

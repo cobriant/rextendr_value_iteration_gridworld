@@ -12,3 +12,5 @@ NULL
 #' @export
 value_iteration <- function(reward, obstacles, wind, beta) .Call(wrap__value_iteration, reward, obstacles, wind, beta)
 
+generate_trajs <- function(policy, obstacles, wind) .Call(wrap__generate_trajs, policy, obstacles, wind)
+
